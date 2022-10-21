@@ -13,8 +13,8 @@ var WildRydes = window.WildRydes || {};
     var userPool;
 
     if (!(_config.cognito.userPoolId &&
-          _config.cognito.userPoolClientId &&
-          _config.cognito.region)) {
+        _config.cognito.userPoolClientId &&
+        _config.cognito.region)) {
         $('#noCognitoMessage').show();
         return;
     }
@@ -52,14 +52,15 @@ var WildRydes = window.WildRydes || {};
      * Cognito User Pool functions
      */
 
-    function register(email, password, onSuccess, onFailure) {
+    function register(name, email, password, onSuccess, onFailure) {
         var dataEmail = {
             Name: 'email',
             Value: email
         };
+        var attributeName = new AmazonCognitoIdentity.CognitoUserAttribute({ Name: "name", Value: name });
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        userPool.signUp(toUsername(email), password, [attributeEmail], null,
+        userPool.signUp(toUsername(email), password, [attributeName, attributeEmail], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -130,6 +131,7 @@ var WildRydes = window.WildRydes || {};
     }
 
     function handleRegister(event) {
+        var name = $('#nameInputRegister').val();
         var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
@@ -148,7 +150,7 @@ var WildRydes = window.WildRydes || {};
         event.preventDefault();
 
         if (password === password2) {
-            register(email, password, onSuccess, onFailure);
+            register(name, email, password, onSuccess, onFailure);
         } else {
             alert('Passwords do not match');
         }
