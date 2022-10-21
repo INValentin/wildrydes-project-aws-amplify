@@ -1,0 +1,1 @@
+# wildrydes-project-aws-amplify
